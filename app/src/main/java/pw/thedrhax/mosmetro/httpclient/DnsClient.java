@@ -32,6 +32,8 @@ import android.content.SharedPreferences;
 import android.net.InetAddresses;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -63,11 +65,11 @@ public class DnsClient implements Dns {
 
     private String[] getDefaultServers() {
         List<InetSocketAddress> servers = ResolverConfig.getCurrentConfig().servers();
-        String[] config = new String[servers.toArray().length];
+        String[] config = new String[servers.size()];
         for (int i = 0; i < servers.toArray().length; i++) {
             config[i] = servers.get(i).toString();
         }
-        return config != null ? config : new String[0];
+        return config;
     }
 
     public DnsClient(Context context) {
@@ -111,6 +113,7 @@ public class DnsClient implements Dns {
     private static final String REGEX_OCTET = "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]{1,2})";
     private static final String REGEX_IPv4 = "^" + REGEX_OCTET + "(\\." + REGEX_OCTET + "){3}$";
 
+    @NonNull
     @Override
     public List<InetAddress> lookup(String hostname) throws UnknownHostException {
         if (hostname.matches(REGEX_IPv4)) {
