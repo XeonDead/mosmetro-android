@@ -1,20 +1,22 @@
-apply plugin: 'com.android.application'
-apply plugin: 'androidsvgdrawable'
+plugins {
+    id 'com.android.application'
+    id 'androidsvgdrawable'
+}
 
 android {
     namespace 'pw.thedrhax.mosmetro'
-    compileSdkVersion 31
+    compileSdkVersion 35
 
     defaultConfig {
         applicationId 'pw.thedrhax.mosmetro'
-        minSdkVersion 16
+        minSdkVersion 21
         //noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 25
-        versionCode 77
-        versionName "2.3.2"
+        targetSdkVersion 30
+        versionCode 1
+        versionName "2.3.3"
 
         // Jenkins build info
-        def branch_name = System.getenv("BRANCH_NAME") ?: "play"
+        def branch_name = "main"
         buildConfigField "String", "BRANCH_NAME", "\"$branch_name\""
         buildConfigField "Integer", "BUILD_NUMBER", System.getenv("BUILD_NUMBER") ?: "0"
         resValue "string", "build_branch_name", "\"$branch_name\""
@@ -76,63 +78,23 @@ android {
     }
 }
 
-import fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask
-task svgToDrawablePng(type: SvgDrawableTask) {
-    from = files('src/main/res-svg/drawable')
-    to = file('build/generated/res/main')
-    createMissingDirectories = true
-    targetedDensities = ['ldpi', 'hdpi', 'mdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
-    outputFormat = 'PNG'
-    outputType = 'drawable'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.work:work-runtime:2.10.4'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
-    implementation 'org.jsoup:jsoup:1.8.3'
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation 'org.jsoup:jsoup:1.21.2'
     implementation ('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude module: 'junit'
     }
     implementation 'com.edmodo:rangebar:1.0.0'
-    implementation 'dnsjava:dnsjava:2.1.9'
-    implementation 'com.jayway.jsonpath:json-path:2.6.0'
+    implementation 'dnsjava:dnsjava:3.6.3'
+    implementation 'com.jayway.jsonpath:json-path:2.9.0'
     implementation 'com.github.topjohnwu.libsu:core:3.1.2'
-    implementation 'io.sentry:sentry-android-core:6.6.0'
+    implementation 'io.sentry:sentry-android-core:8.21.1'
+    implementation 'net.minidev:json-smart:2.5.1'
 
     // https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'
-}
-
-/*
- * Compatibility with Eclipse and Visual Studio Code
- */
-
-apply plugin: 'com.greensopinion.gradle-android-eclipse'
-apply plugin: 'eclipse'
-
-buildscript {
-    dependencies {
-        classpath fileTree(dir: 'libs', includes: ['gradle-android-eclipse-1.1.1.jar'])
-    }
-}
-
-// https://github.com/greensopinion/gradle-android-eclipse/issues/9
-configurations {
-    eclipseConfig.extendsFrom implementation
-    eclipseTestConfig.extendsFrom testImplementation
-}
-
-eclipse {
-    classpath {
-        plusConfigurations += [
-            configurations.implementation,
-            configurations.testImplementation,
-            configurations.eclipseConfig,
-            configurations.eclipseTestConfig,
-        ]
-        downloadSources = true
-    }
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }

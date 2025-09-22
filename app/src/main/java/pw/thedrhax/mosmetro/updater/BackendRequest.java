@@ -58,53 +58,6 @@ public class BackendRequest {
         this.client = new OkHttp(context);
     }
 
-    private boolean checkNews(DocumentContext data) {
-        JSONArray news = data.read("$.news[?(@.max_builds['" + BuildConfig.BRANCH_NAME + "'] >= " + BuildConfig.BUILD_NUMBER + ")]");
-
-        Map<String,Object> post;
-
-        try {
-            post = (Map<String,Object>) news.get(0);
-        } catch (ClassCastException | IndexOutOfBoundsException ex) {
-            return false;
-        }
-
-        if (post == null) {
-            return false;
-        }
-
-        long id;
-        String title, message, url;
-        try {
-            id = (Integer)post.get("id");
-            title = (String)post.get("title");
-            message = (String)post.get("message");
-            url = (String)post.get("url");
-        } catch (ClassCastException | NullPointerException ex) {
-            return false;
-        }
-
-        if (settings.getLong("pref_notify_news_id", 0) >= id)
-            return false;
-
-        settings.edit().putLong("pref_notify_news_id", id).apply();
-
-        new Notify(context).id(255)
-                .icon(R.drawable.ic_notification_message_colored,
-                      R.drawable.ic_notification_message)
-                .onClick(PendingIntent.getActivity(context, 255,
-                        new Intent(context, SafeViewActivity.class)
-                                .putExtra("data", url),
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                ))
-                .title(title)
-                .text(message)
-                .cancelOnClick(true)
-                .show();
-
-        return true;
-    }
-
     private void checkUpdates(DocumentContext data) {
         UpdateChecker.Result result = new UpdateChecker(context).check(data);
 
@@ -226,10 +179,6 @@ public class BackendRequest {
 
         if (data == Util.JSONPATH_EMPTY) {
             return false;
-        }
-
-        if (settings.getBoolean("pref_notify_news", true)) {
-            checkNews(data);
         }
 
         if (settings.getBoolean("pref_updater_enabled", true)) {
