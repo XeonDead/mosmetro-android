@@ -12,7 +12,7 @@ android {
         minSdkVersion 26
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
-        versionCode 100
+        versionCode 77
         versionName "2.3.2"
 
         // Jenkins build info
@@ -53,7 +53,6 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
