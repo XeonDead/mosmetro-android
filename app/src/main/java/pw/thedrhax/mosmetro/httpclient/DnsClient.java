@@ -78,6 +78,12 @@ public class DnsClient implements Dns {
 
         wifi = new WifiUtils(context);
 
+        if (!wifi.isEnabled()) {
+            Logger.log(this, "WiFi is not enabled");
+            dns = null;
+            return;
+        }
+
         String[] servers = getServers();
 
         if (servers.length == 0) {

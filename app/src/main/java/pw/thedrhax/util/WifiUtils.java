@@ -36,6 +36,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.SupplicantState;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
@@ -130,7 +131,7 @@ public class WifiUtils {
 
     // Get main Wi-Fi state
     public boolean isEnabled() {
-        return wm.isWifiEnabled();
+        return wm.getConnectionInfo().getSupplicantState() == SupplicantState.ASSOCIATED;
     }
 
     // Get Private DNS state (API 28+)
